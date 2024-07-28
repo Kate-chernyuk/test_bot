@@ -9,12 +9,15 @@ USER_ID = '***'
 text1 = 'текст1'
 text2 = 'текст2'
 
+
 @bot.message_handler(commands=['start'])
 def start(message: telebot.types.Message):
-    bot.reply_to(message, "Привет! Запрос?")    
+    bot.reply_to(message, "Привет! Запрос?")
+    
     
 @bot.message_handler(func=lambda m: m.text not in ["Жду", "Нет"])
 def handle_message(message: telebot.types.Message):
+    global request
     request = message.text
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -28,14 +31,14 @@ def handle_response(response: telebot.types.Message):
         bot.reply_to(response, text1)
 
         try:
-            bot.send_message(CHAT_ID, text1)
+            bot.send_message(CHAT_ID, request)
         except:
             bot.send_message(response.chat.id, "Такого чата нет")
     elif response.text == 'Нет':
         bot.reply_to(response, text2)
 
         try:
-            bot.send_message(USER_ID, text2)
+            bot.send_message(USER_ID, request)
         except:
             bot.send_message(response.chat.id, "Такого человека нет")
 
